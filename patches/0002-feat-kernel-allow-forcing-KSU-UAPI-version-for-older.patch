@@ -1,0 +1,32 @@
+From 3befe29908cd0d9ca60a0ab04d5f672b3632046e Mon Sep 17 00:00:00 2001
+From: NanoTurtle <nano@local>
+Date: Sat, 17 Oct 2026 12:38:14 +0800
+Subject: [PATCH 2/2] feat(kernel): allow forcing KSU UAPI version for older
+ managers
+
+BakaSU HEAD reports UAPI 5 while the released rc3 manager speaks UAPI 4;
+the manager hides superuser/module pages unless both match. UAPI 5 only
+adds the EVENT_SERVICES event, so enabling UAPI 4 reporting is safe.
+---
+ uapi/supercall.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/uapi/supercall.h b/uapi/supercall.h
+index 9ba813dc..07f50190 100644
+--- a/uapi/supercall.h
++++ b/uapi/supercall.h
+@@ -18,7 +18,11 @@
+ // 3: scoped su-session driver fd
+ // 4: add KSU_GET_INFO_FLAG_BUNDLED
+ // 5: add EVENT_SERVICES with a start/skip result
++#ifdef KSU_FORCE_UAPI_VERSION
++static const __u32 KERNEL_SU_UAPI_VERSION = KSU_FORCE_UAPI_VERSION;
++#else
+ static const __u32 KERNEL_SU_UAPI_VERSION = 5;
++#endif
+ 
+ /* Magic numbers for reboot hook to install fd */
+ DEFINE_KSU_UAPI_CONST(__u32, KSU_INSTALL_MAGIC1, 0xDEADBEEF)
+-- 
+2.56.0
+

@@ -1,0 +1,6 @@
+logs/
+release/
+*.apk
+*.ko
+*.log
+.DS_Store
